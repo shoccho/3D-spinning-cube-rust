@@ -38,10 +38,10 @@ fn calculateSurfaceChar(
 ) {
     let mx = calculateX(x, y, z, A, B, C);
     let my = calculateY(x, y, z, A, B, C);
-    let mz = calculateZ(x, y, z, A, B, C)+50f32;
+    let mz = calculateZ(x, y, z, A, B, C)+100f32;
     let ooz = 1f32 / mz;
     let xp = WIDTH as isize / 2 + HORIZONTAL_OFFSET + (K1 * ooz * mx * 2f32) as isize ;
-    let yp = WIDTH as isize / 2 + (K1 * ooz * my) as isize;
+    let yp = HEIGHT as isize / 2 + (K1 * ooz * my) as isize;
     let idx = xp as usize + yp as usize * WIDTH;
     if idx >= 0 && idx < WIDTH * HEIGHT {
         if ooz > zBuffer[idx] {
