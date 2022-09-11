@@ -3,11 +3,10 @@ const CUBE_WIDTH: usize = 20;
 const WIDTH: usize = 160;
 const HEIGHT: usize = 44;
 
-const INC: f32 = 0.5;
+const INC: f32 = 0.2f32;
 const HORIZONTAL_OFFSET: isize = -2 * CUBE_WIDTH as isize;
-const K1: f32 = 40f32;
+const K1: f32 = 50f32;
 use std::{thread, time};
-
 
 fn calculateX(i: &f32, j: &f32, k: &f32, A: &f32, B: &f32, C: &f32) -> f32 {
     return *j * A.sin() * B.sin() * C.cos() - *k * A.cos() * B.sin() * C.cos()
@@ -38,11 +37,11 @@ fn calculateSurfaceChar(
 ) {
     let mx = calculateX(x, y, z, A, B, C);
     let my = calculateY(x, y, z, A, B, C);
-    let mz = calculateZ(x, y, z, A, B, C)+100f32;
+    let mz = calculateZ(x, y, z, A, B, C) + 100f32;
     let ooz = 1f32 / mz;
-    let xp = WIDTH as isize / 2 + HORIZONTAL_OFFSET + (K1 * ooz * mx * 2f32) as isize ;
+    let xp = WIDTH as isize / 2 + HORIZONTAL_OFFSET + (K1 * ooz * mx * 2f32) as isize;
     let yp = HEIGHT as isize / 2 + (K1 * ooz * my) as isize;
-    let idx = xp as usize + yp as usize * WIDTH;
+    let idx = xp as usize + (yp as usize * WIDTH);
     if idx >= 0 && idx < WIDTH * HEIGHT {
         if ooz > zBuffer[idx] {
             zBuffer[idx] = ooz;
@@ -70,10 +69,32 @@ fn main() {
                 cubeY += INC;
 
                 calculateSurfaceChar(
-                    &cubeX,
+                    &-cubeX,
                     &cubeY,
                     &z,
-                    &('#' as u8),
+                    &(';' as u8),
+                    &A,
+                    &B,
+                    &C,
+                    &mut zBuffer,
+                    &mut buffer,
+                );
+                calculateSurfaceChar(
+                    &cubeX,
+                    &cubeY,
+                    &-z,
+                    &('$' as u8),
+                    &A,
+                    &B,
+                    &C,
+                    &mut zBuffer,
+                    &mut buffer,
+                );
+                calculateSurfaceChar(
+                    &-z,
+                    &cubeY,
+                    &-cubeX,
+                    &('.' as u8),
                     &A,
                     &B,
                     &C,
@@ -84,24 +105,36 @@ fn main() {
                     &z,
                     &cubeY,
                     &cubeX,
-                    &('$' as u8),
+                    &('%' as u8),
                     &A,
                     &B,
                     &C,
                     &mut zBuffer,
                     &mut buffer,
                 );
-               calculateSurfaceChar(
-                     &-z,
-                    &cubeY,
-                    &-cubeX,
-                    &('#' as u8),
+
+                calculateSurfaceChar(
+                    &cubeX,
+                    &-z,
+                    &-cubeY,
+                    &('/' as u8),
                     &A,
                     &B,
                     &C,
                     &mut zBuffer,
                     &mut buffer,
-                )
+                );
+                calculateSurfaceChar(
+                    &cubeX,
+                    &z,
+                    &cubeY,
+                    &('+' as u8),
+                    &A,
+                    &B,
+                    &C,
+                    &mut zBuffer,
+                    &mut buffer,
+                );
             }
             cubeX += INC;
         }
@@ -116,7 +149,7 @@ fn main() {
         A += 0.05;
         B += 0.05;
         C += 0.01;
-        let ten_millis = time::Duration::from_millis(80*2);
-thread::sleep(ten_millis);
+        let ten_millis = time::Duration::from_millis(10 * 2);
+        thread::sleep(ten_millis);
     }
 }
